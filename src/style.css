@@ -12,6 +12,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  --to-do: #7d68f3;
+  --in-progress: #ffb056;
+  --done: #50b33c;
 }
 
 a {
