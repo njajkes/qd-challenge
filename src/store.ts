@@ -30,9 +30,11 @@ const saveTasks = (newTasks: Task[]): void => {
   }
 };
 
-const getInitialState = () => ({
-  task: getInitialTasks(),
-});
+const getInitialState = () => {
+  return {
+    tasks: getInitialTasks(),
+  };
+};
 
 const AddTaskMutation = "addTask";
 const ChangeTaskMutation = "changeTask";
@@ -84,7 +86,7 @@ export const store = createStore({
   },
   actions: {
     [SaveAction]: ({ state }) => {
-      saveTasks(state.tasks);
+      saveTasks(state.tasks ?? []);
     },
   },
 });
