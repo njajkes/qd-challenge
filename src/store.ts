@@ -88,3 +88,26 @@ export const store = createStore({
     },
   },
 });
+
+type Store = typeof store;
+
+const commitInState = (
+  store: Store
+): ((mutationName: string, ...payload: any[]) => void) => store.commit;
+
+export const commitAddTask = (store: Store, title: string) =>
+  commitInState(store)(AddTaskMutation, title);
+export const commitChangeTask = (store: Store, task: Task) =>
+  commitInState(store)(ChangeTaskMutation, task);
+export const commitDeleteTask = (store: Store, id: Task["id"]) =>
+  commitInState(store)(DeleteTaskMutation, id);
+
+export const Save = (store: Store): void => store.dispatch(SaveAction);
+
+export const getterGetTaskById = (
+  store: Store,
+  id: Task["id"]
+): Task | undefined => store.getters[GetTaskByIdGetter](id);
+
+export const getterGetTaskIds = (store: Store, status: TaskStatus): number[] =>
+  store.getters[status];
