@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { Task } from "./entities";
+import { Task, TaskStatus } from "./entities";
 
 const taskStorage = {
   get: () =>
@@ -34,6 +34,57 @@ const getInitialState = () => ({
   task: getInitialTasks(),
 });
 
+const AddTaskMutation = "addTask";
+const ChangeTaskMutation = "changeTask";
+const DeleteTaskMutation = "deleteTask";
+const SaveAction = "save";
+const GetTaskByIdGetter = "getTaskById";
+
 export const store = createStore({
   state: getInitialState,
+  mutations: {
+    [AddTaskMutation]: (state, title: string) => {
+      state.tasks.push({
+        id: Math.max(...state.tasks.map((e) => e.id), 0) + 1,
+        status: TaskStatus.ToDo,
+        title,
+      });
+    },
+    [ChangeTaskMutation]: (state, task: Task) => {
+      const candidate = state.tasks.find((e) => e.id === task.id);
+      if (!candidate) {
+        return;
+      }
+      candidate.status = task.status;
+      candidate.title = task.title;
+    },
+    [DeleteTaskMutation]: (state, id: Task["id"]) => {
+      const index = state.tasks.findIndex((e) => e.id === id);
+      if (!~index) {
+        return;
+      }
+      state.tasks.splice(index, 1);
+    },
+  },
+  getters: {
+    [TaskStatus.Done]: (state) =>
+      state.tasks
+        .filter((el) => el.status === TaskStatus.Done)
+        .map((el) => el.id),
+    [TaskStatus.InProgress]: (state) =>
+      state.tasks
+        .filter((el) => el.status === TaskStatus.InProgress)
+        .map((el) => el.id),
+    [TaskStatus.ToDo]: (state) =>
+      state.tasks
+        .filter((el) => el.status === TaskStatus.ToDo)
+        .map((el) => el.id),
+    [GetTaskByIdGetter]: (state) => (id: Task["id"]) =>
+      state.tasks.find((el) => el.id === id),
+  },
+  actions: {
+    [SaveAction]: ({ state }) => {
+      saveTasks(state.tasks);
+    },
+  },
 });
